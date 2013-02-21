@@ -1,6 +1,6 @@
 'use strict'
 
-class window.ExpiryLocalStorageData
+class window.ExpiringLocalStorageData
 
   constructor: (@key, @default = undefined) ->
   	@value = @default

@@ -4,7 +4,7 @@ describe 'Main', ->
 
   beforeEach ->
     @key = 'key'
-    @data = new window.ExpiryLocalStorageData(@key)
+    @data = new window.ExpiringLocalStorageData(@key)
 
   it 'stores the key', ->
     expect(@data.getKey()).toBe(@key)
@@ -27,7 +27,7 @@ describe 'Main', ->
 
     beforeEach ->
       @defaultValue = 'default value'
-      @data = new window.ExpiryLocalStorageData(@key, @defaultValue)
+      @data = new window.ExpiringLocalStorageData(@key, @defaultValue)
 
     it 'has a default value', ->
       expect(@data.getValue()).toBe(@defaultValue)
