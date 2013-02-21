@@ -1,0 +1,13 @@
+{
+  "name": "expiring-local-storage",
+  "version": "0.1.0",
+  "description": "JS class to use HTML5 local storage with expiration date and default value.",
+  "repository": "https://github.com/summun/expiring-local-storage",
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-contrib-jasmine": "~0.3.2",
+    "grunt-contrib-watch": "~0.2.0",
+    "grunt-contrib-coffee": "~0.4.0",
+    "grunt-contrib-jshint": "~0.1.1"
+  }
+}
