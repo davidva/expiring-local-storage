@@ -27,12 +27,49 @@ describe 'Main', ->
 
     beforeEach ->
       @defaultValue = 'default value'
-      @data = new window.ExpiringLocalStorageData(@key, @defaultValue)
+      @data.setDefaultValue(@defaultValue)
 
-    it 'has a default value', ->
+    it 'updates the value if it is the former default', ->
       expect(@data.getValue()).toBe(@defaultValue)
+
+    it 'keeps the previous value if it is not the former default', ->
+      value = 'value'
+      @data.setValue(value).setDefaultValue(undefined)
+
+      expect(@data.getValue()).toBe(value)
 
     it 'sets default value after reset', ->
       @data.setValue('non default value')
+
       @data.reset()
+
       expect(@data.getValue()).toBe(@defaultValue)
+
+  describe 'expiring time', ->
+
+    beforeEach ->
+      @firstTime = 648063000000
+      ttl = 3600000
+      @futureTime = @firstTime + ttl
+      @futureDate = new Date(@futureTime)
+
+      creationDate = new Date(@firstTime)
+      @spy = spyOn(window, 'Date').andReturn(creationDate)
+      @data = new window.ExpiringLocalStorageData(@key).setTtl(ttl)
+
+    it 'stores creation time as last access time', ->
+      expect(@data.getLastAccess()).toBe(@firstTime)
+
+    it 'updates last access when changing its value', ->
+      window.Date.andReturn(@futureDate)
+
+      @data.setValue('dummy')
+
+      expect(@data.getLastAccess()).toBe(@futureTime)
+
+    it 'returns default value after expiration', ->
+      @data.setValue('dummy value')
+
+      window.Date.andReturn(@futureDate)
+
+      expect(@data.getValue()).toBeUndefined()
