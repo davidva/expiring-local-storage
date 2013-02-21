@@ -2,7 +2,8 @@
 
 class window.ExpiryLocalStorageData
 
-  constructor: (@key) ->
+  constructor: (@key, @default = undefined) ->
+  	@value = @default
 
   getKey: ->
     @key
@@ -14,4 +15,4 @@ class window.ExpiryLocalStorageData
     @value = value
 
   reset: ->
-    @value = undefined
+    @value = @default
