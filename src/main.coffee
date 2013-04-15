@@ -1,40 +1,38 @@
 'use strict'
 
-class window.ExpiringLocalStorageData
+window.ExpiringLocalStorage =
 
-  constructor: (@key) ->
-  	@value = @defaultValue
-  	@resetTimestamp()
+  create: (spec) ->
 
-  getKey: ->
-    @key
+    load = () ->
+      JSON.parse(window.localStorage.getItem(spec.key))
 
-  getLastAccess: ->
-  	@timestamp
+    isExpired = (data) ->
+      data.lastAccess + data.ttl <= new Date().getTime()
 
-  getValue: ->
-  	if @isExpired()
-  	  @reset()
-    @value
+    data = load() || {}
+    data.defaultValue = spec.defaultValue || null
+    data.value = data.value || data.defaultValue
+    data.ttl = spec.ttl || 0
+    window.localStorage.setItem(spec.key, JSON.stringify(data))
 
-  setValue: (value) ->
-    @resetTimestamp()
-    @value = value
-    @
+    that = {}
 
-  reset: ->
-    @setValue(@defaultValue)
+    that.getValue = () ->
+      former = load()
+      if isExpired(former)
+        former.defaultValue
+      else
+        former.value
 
-  setDefaultValue: (defaultValue) ->
-    if @value == @defaultValue
-      @setValue(defaultValue)
-    @defaultValue = defaultValue
-    @
+    that.setValue = (value) ->
+      former = load()
+      former.value = value
+      former.lastAccess = new Date().getTime()
+      window.localStorage.setItem(spec.key, JSON.stringify(former))
+      that
 
-  resetTimestamp: ->
-  	@timestamp = new Date().getTime()
+    that.resetValue = (value) ->
+      that.setValue(load().defaultValue)
 
-  setTtl: (@ttl) -> @
-
-  isExpired: ->
-    @ttl? and new Date().getTime() >= @timestamp + @ttl
+    that
